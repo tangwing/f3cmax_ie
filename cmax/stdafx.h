@@ -4,7 +4,7 @@
 //
 
 #pragma once
-
+#include <boost/multiprecision/cpp_int.hpp>
 #include "targetver.h"
 
 #include <stdio.h>

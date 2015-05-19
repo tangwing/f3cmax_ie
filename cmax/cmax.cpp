@@ -1,11 +1,11 @@
 // cmax.cpp? définit le point d'entrée pour l'application console.
 //
-
 #include "stdafx.h"
 #include "f3cmax.h"
 #include "task.h"
 #include "permutation.h"
 #include "branch_and_bound.h"
+
 using namespace std;
 
 void genRandomTask(vector<Task>& tasks,int min, int max, int nbTask);
@@ -24,13 +24,13 @@ void mainIE(){
 {
      
     vector<Task> tasks;
-    genRandomTask(tasks, 1,5, N);
+    genRandomTask(tasks, 1,3, N);
 
     F3Cmax f(tasks);
 
     auto resPair = f.solve_bb();    cout<<resPair<<endl;
 
-    int count = f.calc_InclusionExclusion(resPair-1);    cout<<endl<<count<<"!"<<endl;    cout<<"Db usage:"<<f.tmpCountDicUsage<<"!"<<endl;
+    bigint count = f.calc_InclusionExclusion(resPair-1);    cout<<endl<<count<<"!"<<endl;    cout<<"Db usage:"<<f.tmpCountDicUsage<<"!"<<endl;
     
     /*char c;
     if(count<=0) 

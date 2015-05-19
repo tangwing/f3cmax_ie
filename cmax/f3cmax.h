@@ -4,8 +4,9 @@
 #include "permutation.h"
 #include "task.h"
 #include "branch_and_bound.h"
-#define N 6 //Max number of tasks
+#define N 15 //Max number of tasks
 using namespace std;
+typedef boost::multiprecision::cpp_int bigint;
 
 int factorial(int n)
 {
@@ -16,9 +17,9 @@ class F3Cmax{
 public:
     vector<Task> tasks;
 
-    map<string, long long> nsDB;
+    map<string, bigint> nsDB;
 
-    int tmpCountDicUsage;
+    bigint tmpCountDicUsage;
 
     F3Cmax( const vector<Task> & tasks){
         tmpCountDicUsage=0;
@@ -51,7 +52,7 @@ public:
     }
 
     /// The function to calculate N(S): number of affectation of intervals excluding jobs from S, with cmax < t3, c2<t2, c1<t1
-    long long ns(const bitset<N> & S, int t1, int t2, int t3){
+    bigint ns(const bitset<N> & S, int t1, int t2, int t3){
         // Ensure that ti<t(i+1)
         t2=min(t2, t3-1);
         t1=min(t1, t2-1);
@@ -65,14 +66,14 @@ public:
 
         // Try to find if it's already precomputed
         string key=makeKey(S,t1,t2,t3);
-        map<string,long long>::iterator itVal = nsDB.find(key);
+        map<string,bigint>::iterator itVal = nsDB.find(key);
         if(itVal != nsDB.end()){
             tmpCountDicUsage++;
             //cout<<"yes!";
             return itVal->second;
         }
         // Recurrence conditions
-        long long result = ns(S, t1,t2, t3-1);
+        bigint result = ns(S, t1,t2, t3-1);
         for (unsigned int i=0; i<tasks.size();  i++)
         {
             if(S.test(i) == false){           // job i is in S_bar
@@ -88,16 +89,17 @@ public:
     }
 
     /// 
-    long long calc_InclusionExclusion( const int k){
+    bigint calc_InclusionExclusion( const int k){
         // (-1)^|W|N(W)
-        long long count=0;
+        bigint count=0;
         int n = tasks.size();   // Problem size
-        int nW = int(std::pow(double(2), int(n)));    // Number of subsets
-        for(int i=0; i<nW; i++){
+        bigint nW = int(std::pow(double(2), int(n)));    // Number of subsets
+        // Consider n<64
+        for(unsigned __int64 i=0; i<nW; i++){
             // We flip the selection by "nW - 1 -i"
             // So selection is all properties that we could have, not essentially all of them.
             std::bitset<N> selection(i);
-            long long partialcount=ns(selection, k,k,k);
+            bigint partialcount=ns(selection, k,k,k);
             cout<<"========"<< i<<endl;
             cout<<selection<<endl;
             cout <<partialcount<<endl;
